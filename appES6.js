@@ -76,10 +76,11 @@ class Store {
     static displayBooks() {
         const books = Store.getBooks()
 
-        books.forEach(function(book){       /*The parameter is a requirement for the method being used - "addBookTo List" associated with object ui*/
+        books.forEach(function (book) {
+            /*The parameter is a requirement for the method being used - "addBookTo List" associated with object ui*/
             const ui = new UI() /*Instantiating in order to use access below method*/
             // Add book to UI
-            ui.addBookToList(book)/*calling this method to display all books stored in local storage */
+            ui.addBookToList(book) /*calling this method to display all books stored in local storage */
         })
     }
 
@@ -92,22 +93,22 @@ class Store {
 
     }
     // remove from local storage
-    static removeBook(isbn,index) {
-const books=Store.getBooks();
+    static removeBook(isbn, index) {
+        const books = Store.getBooks();
 
-books.forEach(function (book){
-   
-    if(book.isbn===isbn){
-        books.splice(index,1)
-    }
-});
-localStorage.setItem("books",JSON.stringify(books))
+        books.forEach(function (book) {
+
+            if (book.isbn === isbn) {
+                books.splice(index, 1)
+            }
+        });
+        localStorage.setItem("books", JSON.stringify(books))
     }
 }
 
 //  DOM load event - 1st event to happen when DOM loads - this calls Store.displayBooks when the DOM uploads
 
-document.addEventListener("DOMContentLoaded",Store.displayBooks)
+document.addEventListener("DOMContentLoaded", Store.displayBooks
 
 document.querySelector("#book-form").addEventListener("submit", function (e) {
     let titleV = document.querySelector("#title").value,
@@ -144,8 +145,8 @@ document.querySelector("#book-form").addEventListener("submit", function (e) {
 document.querySelector("#book-list").addEventListener("click", function (e) {
     const ui = new UI()
     ui.deleteBook(e.target) /*Delete book */
-   
-   Store.removeBook(e.target.parentElement.previousElementSibling.textContent) /*Remove from Local storage**Bcoz there's no usage of ID to identify and relate to uniqueness, we are opting for unique isbn*/
+
+    Store.removeBook(e.target.parentElement.previousElementSibling.textContent) /*Remove from Local storage**Bcoz there's no usage of ID to identify and relate to uniqueness, we are opting for unique isbn*/
 
 
     ui.showAlert("Book removed", "success")

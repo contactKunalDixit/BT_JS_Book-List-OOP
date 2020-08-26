@@ -59,16 +59,65 @@ UI.prototype.clearFieldsAfterAdd = function () {
     document.getElementById("isbn").value = "";
 };
 
-UI.prototype.deleteBook=function(target){
-    if(target.className ==="delete"){
+UI.prototype.deleteBook = function (target) {
+    if (target.className === "delete") {
         target.parentElement.parentElement.remove();
     }
+}
+
+
+// !OBSERVATION:
+// !        WHETHER TO USE Storage.call(this,getBooks())    OR
+// !                TO USE storage.getBooks()
+// !    @ ITS NOT WORKING EITHER WAYS AT THE MOMENT
+// !    @ USER ENTRIES TRANSITIONING INTO OBJECTS GETTING ADDED TO LOCAL STORAGE BUT NOT UPLOADING BY THEMSELVES ON DOMContentLoaded event below
+
+
+function Storage() {}
+var storage = new Storage() /*Instantiating a global object "storage" */
+
+Storage.prototype.getBooks = function () {
+    let books;
+    if (localStorage.getItem("books") === null) {
+        books = [];
+    } else {
+        books = JSON.parse(localStorage.getItem("books"))
+    }
+    return books;
+}
+Storage.prototype.displayBooks = function () {
+    // const books = storage.getBooks();
+    const books = Storage.call(this,getBooks())
+    books.forEach(function (book) {
+        const ui = new UI();
+        ui.addBookToList(book);
+    });
+}
+
+Storage.prototype.addBook = function (book) {
+    const books = storage.getBooks();
+    books.push(book);
+    localStorage.setItem("books", JSON.stringify(books))
+};
+Storage.prototype.deleteBook = function (isbn, index) {
+    const books = storage.getBooks();
+    books.forEach(function (book) {
+        if (book.isbn === isbn) {
+            books.splice(index, 1)
+        };
+    });
+    localStorage.setItem("books", JSON.stringify(books))
 }
 
 
 // Event Listeners
 
 
+
+// Event listener for DOM load and fetching data from local storage
+
+// ! CHECK FOR AN ISSUE HERE
+document.addEventListener("DOMContentLoaded", storage.getBooks()) 
 // Event listener for add book
 document.getElementById("book-form").addEventListener("submit", function (e) {
     //  Get form values
@@ -83,7 +132,7 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
 
     // Instantiating a UI
     const ui = new UI();
-  
+    const storage = new Storage();
 
     // Validate
     if (title === "" || author === "" || isbn === "") {
@@ -92,6 +141,7 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
     } else {
         // add book to list
         ui.addBookToList(book);
+        storage.addBook(book) /*adding to local storage */
 
         // Show Success
         ui.showAlert("Book Added", "success");
@@ -103,11 +153,14 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
     e.preventDefault();
 });
 //  Event listener for delete element
-document.getElementById("book-list").addEventListener("click",function(e){
-   console.log(e)
-//    Instantiate the UI
+document.getElementById("book-list").addEventListener("click", function (e) {
+    console.log(e)
+    //    Instantiate the UI and storage objects in order to access and use prototype methods
     const ui = new UI();
+    const storage = new Storage();
+
     ui.deleteBook(e.target)
+    storage.deleteBook(e.target.parentElement.previousElementSibling.textContent) /* trying to target the element through unique isbn no. */
 
     // Show alert
     ui.showAlert("Book removed!", "success")
@@ -115,84 +168,3 @@ document.getElementById("book-list").addEventListener("click",function(e){
 
     e.preventDefault()
 })
-
-
-// ?????????????????????????????????????????????????????????????????????????
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// /**                            PRACTICE                */
-// * Creating a Book constructor
-// let Book = function(title, author, isbn){
-//     this.title=title;
-//     this.author = author;
-//     this.isbn = isbn
-// }
-
-// // * creating a UI constructor
-// let UI = function(){} /* Leaving it blank as its prime role is to accumulate and store all methods in its prototypes*/
-
-// UI.prototype.addBookToList = function(book){
-// let list = document.getElementById("book-list");
-// let row = document.createElement("tr")
-// row.innerHTML = `
-// <td>${book.title}</td>
-// <td>${book.author}</td>
-// <td>${book.isbn}</td>
-// <td><a href="#"class="delete">X</a></td>`
-// list.appendChild(row)
-// }
-
-
-// UI.prototype.showAlert = function(message,className){
-//     let div = document.createElement("div")
-//     div.classList = `alert ${className}`;
-//     div.appendChild(document.createTextNode(message));
-//     let container= document.querySelector(".container");
-//     let form = document.querySelector("#book-form")
-//     container.insertBefore(div,form)
-//     setTimeout(function(){
-//         document.querySelector(".alert").remove()
-//     },3000
-//     )
-// }
-
-// UI.prototype.deleteBook = function(target){
-//     if(target.className==="delete"){
-//         document.querySelector(".delete").parentElement.parentElement.remove()
-// }}
-
-
-
-// UI.prototype.clearELementsAfterAddingList = function(){
-//     document.getElementById("title").value = "";
-//     document.getElementById("author").value = "";
-//     document.getElementById("isbn").value = "";
-// }
-
-// document.getElementById("book-form").addEventListener("submit",function(e){
-//     let titleV = document.getElementById("title").value,
-//     authorV= document.getElementById("author").value,
-//     isbnV = document.getElementById("isbn").value
-
-//     let book = new Book(titleV,authorV,isbnV)
-
-//     let ui = new UI()
-
-// if(titleV===""||authorV===""||isbnV===""){
-// ui.showAlert(`Please fill in all columns`,"error")
-// }else{
-//     ui.addBookToList(book);
-//     ui.showAlert(`Book succesfully added`,"success")
-//         ui.clearELementsAfterAddingList()
-// }
-
-//     e.preventDefault()
-// })
-
-// /*on dynamically added or amended elements, always choose parent element rahter than specific element, otherwise, you'll have to add a class on each element to manage its control */
-// document.getElementById("book-list").addEventListener("click",function(e){
-//     let ui = new UI()
-//     ui.deleteBook(e.target)
-//     ui.showAlert("Book Deleted!","success")
-
-//     e.preventDefault()
-// })
