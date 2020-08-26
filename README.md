@@ -23,9 +23,9 @@ Comprises of the common structure stated below:
 
 a)  focussed on submit
  validation if the user input is "" in any of the fields>showAlert()
-   else
-        addBook()
-        showAlert()
+   /else/
+        addBook() >>
+        showAlert() >>
         clearFieldsAfterAdd()
 
 b)  Focussed on click (X for delete)
