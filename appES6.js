@@ -76,10 +76,9 @@ class Store {
     static displayBooks() {
         const books = Store.getBooks()
 
-        books.forEach(function(book){
+        books.forEach(function(book){       /*The parameter is a requirement for the method being used - "addBookTo List" associated with object ui*/
             const ui = new UI() /*Instantiating in order to use access below method*/
             // Add book to UI
-
             ui.addBookToList(book)/*calling this method to display all books stored in local storage */
         })
     }
