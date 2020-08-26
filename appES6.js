@@ -102,10 +102,7 @@ books.forEach(function (book){
     }
 });
 localStorage.setItem("books",JSON.stringify(books))
-
     }
-
-
 }
 
 //  DOM load event - 1st event to happen when DOM loads - this calls Store.displayBooks when the DOM uploads
