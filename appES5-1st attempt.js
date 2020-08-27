@@ -81,13 +81,14 @@ Storage.prototype.getBooks = function () {
     if (localStorage.getItem("books") === null) {
         books = [];
     } else {
-        books = JSON.parse(localStorage.getItem("books"))
+        books = JSON.parse(localStorage.getItem("books"));
     }
     return books;
 }
 Storage.prototype.displayBooks = function () {
     // const books = storage.getBooks();
-    const books = Storage.call(this,getBooks())
+ console.log(storage)
+    const books = storage.getBooks()
     books.forEach(function (book) {
         const ui = new UI();
         ui.addBookToList(book);

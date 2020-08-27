@@ -108,7 +108,7 @@ class Store {
 
 //  DOM load event - 1st event to happen when DOM loads - this calls Store.displayBooks when the DOM uploads
 
-document.addEventListener("DOMContentLoaded", Store.displayBooks
+document.addEventListener("DOMContentLoaded", Store.displayBooks)
 
 document.querySelector("#book-form").addEventListener("submit", function (e) {
     let titleV = document.querySelector("#title").value,
