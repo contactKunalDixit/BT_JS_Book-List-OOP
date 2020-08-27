@@ -17,8 +17,8 @@ class UI {
         // Nothing to be added here    
     }
     addBookToList(book) {
-        const list = document.querySelector("#book-list")
-        const row = document.createElement("tr")
+        const list = document.querySelector("#book-list");
+        const row = document.createElement("tr");
         // insert cols into row
         row.innerHTML = `
         <td>${book.title}</td>
@@ -29,28 +29,28 @@ class UI {
         list.appendChild(row)
     }
     showAlert(message, className) {
-        let div = document.createElement("div")
-        div.className = `alert ${className}`
+        let div = document.createElement("div");
+        div.className = `alert ${className}`;
 
-        div.appendChild(document.createTextNode(message))
+        div.appendChild(document.createTextNode(message));
 
-        let container = document.querySelector(".container")
-        let form = document.querySelector("#book-form")
-        container.insertBefore(div, form)
+        let container = document.querySelector(".container");
+        let form = document.querySelector("#book-form");
+        container.insertBefore(div, form);
         // TimeOut after 3 Seconds
         setTimeout(function () {
-            document.querySelector(".alert").remove()
-        }, 3000)
+            document.querySelector(".alert").remove();
+        }, 3000);
     }
     clearFieldsAfterAdd() {
         document.querySelector("#title").value = "";
         document.querySelector("#author").value = "";
-        document.querySelector("#isbn").value = ""
+        document.querySelector("#isbn").value = "";
     }
 
     deleteBook(target) {
         if (target.className === "delete") {
-            target.parentElement.parentElement.remove()
+            target.parentElement.parentElement.remove();
         }
     }
 
@@ -64,9 +64,9 @@ class Store {
     static getBooks() {
         let books;
         if (localStorage.getItem("books") === null) {
-            books = []
+            books = [];
         } else {
-            books = JSON.parse(localStorage.getItem("books"))
+            books = JSON.parse(localStorage.getItem("books"));
         }
         return books;
     }
@@ -74,13 +74,13 @@ class Store {
 
     // load it to the display 
     static displayBooks() {
-        const books = Store.getBooks()
+        const books = Store.getBooks();
 
         books.forEach(function (book) {
             /*The parameter is a requirement for the method being used - "addBookTo List" associated with object ui*/
-            const ui = new UI() /*Instantiating in order to use access below method*/
+            const ui = new UI() ;/*Instantiating in order to use access below method*/
             // Add book to UI
-            ui.addBookToList(book) /*calling this method to display all books stored in local storage */
+            ui.addBookToList(book); /*calling this method to display all books stored in local storage */
         })
     }
 
@@ -88,7 +88,7 @@ class Store {
     static addBook(book) {
         const books = Store.getBooks() /*using actual class name 'Store' bcoz its a static method, and since has not been in existance as a result of instantiation of an object, would always be used with reference to the class itself, the class in which it resides */
         books.push(book);
-        localStorage.setItem("books", JSON.stringify(books))
+        localStorage.setItem("books", JSON.stringify(books));
 
 
     }
@@ -99,10 +99,10 @@ class Store {
         books.forEach(function (book) {
 
             if (book.isbn === isbn) {
-                books.splice(index, 1)
+                books.splice(index, 1);
             }
         });
-        localStorage.setItem("books", JSON.stringify(books))
+        localStorage.setItem("books", JSON.stringify(books));
     }
 }
 
@@ -116,39 +116,39 @@ document.querySelector("#book-form").addEventListener("submit", function (e) {
     isbnV = document.querySelector("#isbn").value;
 
 
-    let book = new Book(titleV, authorV, isbnV)
+    let book = new Book(titleV, authorV, isbnV);
     // console.log(book)
     let ui = new UI()
 
     // Validate
     if (titleV === "" || authorV === "" || isbnV === "") {
         // Error alert
-        ui.showAlert(`Please fill in all fields`, `error`)
+        ui.showAlert(`Please fill in all fields`, `error`);
     } else {
         // add book to list
-        ui.addBookToList(book)
+        ui.addBookToList(book);
 
         //  Add to local storage
         // We dont need to instantiate any object since this is an static method. We can use the method straightaway without instantiaing any object
-        Store.addBook(book)
+        Store.addBook(book);
 
         // Show success
-        ui.showAlert(`Book Added`, "success")
+        ui.showAlert(`Book Added`, "success");
 
         // clear fields
-        ui.clearFieldsAfterAdd()
+        ui.clearFieldsAfterAdd();
     }
 
-    e.preventDefault()
+    e.preventDefault();
 })
 
 document.querySelector("#book-list").addEventListener("click", function (e) {
-    const ui = new UI()
-    ui.deleteBook(e.target) /*Delete book */
+    const ui = new UI();
+    ui.deleteBook(e.target); /*Delete book */
 
     Store.removeBook(e.target.parentElement.previousElementSibling.textContent) /*Remove from Local storage**Bcoz there's no usage of ID to identify and relate to uniqueness, we are opting for unique isbn*/
 
 
-    ui.showAlert("Book removed", "success")
-    e.preventDefault()
+    ui.showAlert("Book removed", "success");
+    e.preventDefault();
 })
